@@ -1,6 +1,6 @@
 FROM golang:1.17.3-alpine3.14 AS build
 
-WORKDIR /go/src/
+WORKDIR /go/src/docker-plugin-secrets
 
 COPY go.mod go.sum main.go ./
 
