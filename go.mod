@@ -1,4 +1,4 @@
-module https://github.com/qyvlik/docker-plugin-secrets
+module github.com/qyvlik/docker-plugin-secrets
 
 go 1.16
 
