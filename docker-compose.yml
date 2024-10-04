@@ -2,8 +2,8 @@
 #version: '3.8'
 
 services:
-  nginx:
-    image: nginx
+  busybox:
+    image: busybox:latest
 
 
 #volumes:
