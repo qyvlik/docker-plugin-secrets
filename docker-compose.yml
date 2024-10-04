@@ -4,15 +4,19 @@
 services:
   busybox:
     image: busybox:latest
-    secrets:
-      - source: app_secret
-        target: /run/secrets/busybox
 
 
-secrets:
-  app_secret:
-    environment: 'ignore'               # ignore
-    driver: docker-plugin-secrets
-    labels:
-      docker.plugin.secretprovider.vault.path: canux/db/data/db
-      docker.plugin.secretprovider.vault.field: rw
+#volumes:
+#  busybox_secret:
+#    driver: secret_template_volume
+#    driver_opts:
+#      url: "s3://xxxx?path="
+#      template-dir: './xxx'
+#
+#secrets:
+#  app_secret:
+#    environment: 'ignore'               # ignore
+#    template-driver: docker-plugin-secrets
+#    labels:
+#      docker.plugin.secretprovider.vault.path: canux/db/data/db
+#      docker.plugin.secretprovider.vault.field: rw
