@@ -11,7 +11,7 @@ services:
 
 secrets:
   app_secret:
-#    environment: ''               # ignore
+    environment: ''               # ignore
     driver: docker-plugin-secrets
     labels:
       docker.plugin.secretprovider.vault.path: canux/db/data/db
