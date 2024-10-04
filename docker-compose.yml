@@ -12,6 +12,6 @@ services:
 secrets:
   app_secret:
     driver: docker-plugin-secrets
-#    labels:
-#      docker.plugin.secretprovider.vault.path: canux/db/data/db
-#      docker.plugin.secretprovider.vault.field: rw
+    labels:
+      docker.plugin.secretprovider.vault.path: canux/db/data/db
+      docker.plugin.secretprovider.vault.field: rw
