@@ -1,5 +1,5 @@
 
-version: '3.8'
+#version: '3.8'
 
 services:
   busybox:
@@ -11,6 +11,7 @@ services:
 
 secrets:
   app_secret:
+#    environment: ''               # ignore
     driver: docker-plugin-secrets
     labels:
       docker.plugin.secretprovider.vault.path: canux/db/data/db
