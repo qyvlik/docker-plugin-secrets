@@ -1,142 +1,17 @@
-# yaml variable
-x-labels: &default-labels
-    labels:
-        - "com.service.alt_name=canux"
 
-x-restart: &default-restart
-    restart_policy:
-        condition: any
-        delay: 60s
-        max_attempts: 0
-        window: 0s
-
-x-placement: &default-placement
-    placement:
-        constraints:
-            - "node.labels.shanghai==canux"
-
-x-secrets: &default-secrets
-    secrets:
-        - source: mysql_rw
-          target: db
-
-x-fe-image: &fe pro.artifactory.geo.arm.com/fe:1.0.5
-x-be-image: &be pro.artifactory.geo.arm.com/be:1.0.8
-x-vault-plugin: &driver dev.artifactory.geo.arm.com/docker-plugin-vault:0.0.1
-
-
-
-# compose file
 version: '3.8'
 
 services:
-    webui:
-        <<: *default-labels
-        image: *fe
-        deploy:
-            <<: *default-restart
-            resources:
-                reservations:
-                    cpus: '0.1'
-                    memory: 100M
-                limits:
-                    cpus: '1.0'
-                    memory: 1G
-        networks:
-            - default
+  busybox:
+    image: busybox:latest
+    secrets:
+      - source: app_secret
+        target: /run/secrets/busybox
 
-    api:
-        <<: *default-labels
-        # Dedicated web service for handling /api/v0/
-        image: *be
-        # if updating this timeout also update the timeout in nginx/nginx.conf
-        deploy:
-            <<: *default-restart
-            mode: replicated
-            replicas: 1
-            resources:
-                reservations:
-                    cpus: '4.0'
-                    memory: 8G
-                limits:
-                    cpus: '8.0'
-                    memory: 16G
-        command:
-            - "gunicorn"
-            - "--preload"
-            - "--worker-class=gthread"
-            - "--workers=4"
-            - "--threads=4"
-            - "--max-requests=100"
-            - "--max-requests-jitter=10"
-            - "--timeout=7200"
-            - "--graceful-timeout=1800"
-            - "--limit-request-line=8190"
-            - "--limit-request-fields=32768"
-            - "--limit-request-field_size=0"
-            - "--bind=0.0.0.0:8000"
-            - "site_main.wsgi:application"
-        environment:
-            <<: *default-env
-        networks:
-            - default
-        <<: *default-secrets
-        healthcheck:
-            test: curl -f http://localhost:8000/api/v0/ || exit 1
-            interval: 20s
-            timeout: 10s
-            retries: 3
-
-    web:
-        <<: *default-labels
-        # Web service for handling all web requests without dedicated containers
-        image: *fe
-        deploy:
-            <<: *default-restart
-            mode: replicated
-            replicas: 1
-            resources:
-                reservations:
-                    cpus: '1.0'
-                    memory: 1G
-                limits:
-                    cpus: '2.0'
-                    memory: 2G
-        command:
-            - "gunicorn"
-            - "--preload"
-            - "--worker-class=gthread"
-            - "--workers=2"
-            - "--threads=2"
-            - "--max-requests=10"
-            - "--max-requests-jitter=2"
-            - "--timeout=3600"
-            - "--graceful-timeout=900"
-            - "--limit-request-line=8190"
-            - "--limit-request-fields=32768"
-            - "--limit-request-field_size=0"
-            - "--bind=0.0.0.0:8000"
-            - "site_main.wsgi:application"
-        environment:
-            <<: *default-env
-        networks:
-            - default
-        <<: *default-secrets
-        healthcheck:
-            test: curl -f http://localhost:8000/admin/ || exit 1
-            interval: 20s
-            timeout: 10s
-            retries: 3
-
-networks:
-    default:
-        driver: overlay
-        attachable: true
 
 secrets:
-  mysql_rw:
-    driver: *driver
-    labels:
-      docker.plugin.secretprovider.vault.path: canux/db/data/db
-      docker.plugin.secretprovider.vault.field: rw
-
+  app_secret:
+    driver: docker-plugin-secrets
+#    labels:
+#      docker.plugin.secretprovider.vault.path: canux/db/data/db
+#      docker.plugin.secretprovider.vault.field: rw
