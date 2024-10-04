@@ -1,4 +1,4 @@
-module gitlab.com/crazy-canux/docker-plugin-vault
+module https://github.com/qyvlik/docker-plugin-secrets
 
 go 1.16
 
