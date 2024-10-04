@@ -1,35 +1,10 @@
 {
-	"description": "Vault secret plugin",
-	"documentation": "https://github.com/crazy-canux/docker-plugin-vault/blob/main/README.md",
+	"description": "docker secrets plugin",
+	"documentation": "https://github.com/qyvlik/docker-plugin-secrets/blob/main/README.md",
 	"entrypoint": [
-		"/go/bin/docker-plugin-vault"
+		"/go/bin/docker-plugin-secrets"
 	],
 	"env": [
-		{
-			"name": "VAULT_TOKEN",
-			"description": "token of vault.",
-			"value": null,
-			"settable": ["value"]
-		},
-		{
-			"name": "VAULT_SKIP_VERIFY",
-			"description": "skip CA verify.",
-			"value": "true",
-			"settable": ["value"]
-		},
-		 
-		{
-			"name": "policy-template",
-			"description": "Template defining which policies to attach to token",
-			"value": "{{ .ServiceName }}",
-			"settable": ["value"]
-		},
-		{
-			"name": "VAULT_ADDR",
-			"description": "Vault server address",
-			"value": "https://vault.canux.com/",
-			"settable": ["value"]
-		},
 		{
 			"name": "DOCKER_API_VERSION",
 			"description": "Docker API version",
@@ -50,7 +25,7 @@
 	},
 	"interface": {
 		"types":["docker.secretprovider/1.0"],
-		"socket":"vault.sock"
+		"socket":"plugin.sock"
 	},
 	"linux": {
 		"capabilities": ["CAP_SYS_ADMIN"]
