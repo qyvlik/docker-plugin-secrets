@@ -9,10 +9,9 @@ RUN go env -w GO111MODULE=on && \
 
 RUN go mod download &&\
     go install -v
-RUN go build -o docker-plugin-secrets .
 
 FROM scratch
 
-COPY --from=build "/go/src/docker-plugin-secrets" "/go/bin/docker-plugin-secrets"
+COPY --from=build "/go/bin/docker-plugin-secrets" "/go/bin/docker-plugin-secrets"
 
 ENTRYPOINT ["/go/bin/docker-plugin-secrets"]
